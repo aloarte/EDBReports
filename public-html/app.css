@@ -1,0 +1,21 @@
+.testimonial-group > .row {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.testimonial-group > .row > .col-xs-4 {
+  display: inline-block;
+  float: none;
+}
+/* Decorations */
+.col-xs-4 { 
+	vertical-align: top; 
+	padding-bottom: 1px; 
+	padding-top: 1px;
+	margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+	border-radius: 20px;
+	background-color: WhiteSmoke   ;
+}
+	
