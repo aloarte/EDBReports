@@ -74,76 +74,88 @@
 						$files = scandir($group);	
 						$primero = true;
 						$fechaTransformadaAnterior="";
+						$cntReportes=0;
 
+						//Recorre el directorio obteniendo los reportes y guardandolos en un array
 						foreach ($files as &$refToFile) 
+						{
+							if(!in_array($refToFile, $bosses))
 							{
-								if(!in_array($refToFile, $bosses))
-								{
-									//Se parte la cadena por el '-'
-									$refFirstSplit = explode('-',$refToFile);								
-									//Se saca la hora dividiendo el string sobrante de la anterior operación por '_' 
-									$refSecondSplit = explode('_',$refFirstSplit[1]);
-									//Se obtiene la fecha
-									$fechaReporte = $refFirstSplit[0];
-									$horaReporte = $refSecondSplit[0];
+								$array[$cntReportes] = $refToFile; //Meto el valor en el array
+								$cntReportes++; //aumenta el contador       
 
-									$anio = substr($fechaReporte,0,4); 
-									$mes = substr($fechaReporte,4,2); 
-									$dia = substr($fechaReporte,6,2); 
-
-									$hora = substr($horaReporte,0,2); 
-									$minuto = substr($horaReporte,2,2); 
-									$segundo = substr($horaReporte,4,2); 
-
-									$fechaTransformada = "".$dia."/".$mes."/".$anio;
-									$horaTransformada = "".$hora.":".$minuto.":".$segundo;
-
-									if($primero){
-										//echo "1 $fechaTransformada - $fechaTransformadaAnterior";
-										//guardo la fecha anterior
-										$fechaTransformadaAnterior= $fechaTransformada;
-										$primero = false;
-										echo "<div class='col-xs-4'>";
-										echo "<p> <b> Dia: $fechaTransformada</b></p>";
-										echo "<p> Hora: $horaTransformada</p>";
-										echo "<p><a class='btn btn-primary' href='./".$group."/".$refToFile."'>Ver Reporte</a></p>\n";
-									}
-									else if(strcmp($fechaTransformada,$fechaTransformadaAnterior)===0){
-										//echo "2: $fechaTransformada - $fechaTransformadaAnterior";
-										echo "<p> Hora: $horaTransformada</p>";
-										echo "<p><a class='btn btn-primary' href='./".$group."/".$refToFile."'>Ver Reporte</a></p>\n";
-
-									}
-									else if(strcmp($fechaTransformada,$fechaTransformadaAnterior)!==0){
-										//echo "3 $fechaTransformada - $fechaTransformadaAnterior";
-										//Se actualiza la nueva fecha anterior
-										$fechaTransformadaAnterior= $fechaTransformada;
-										echo "</div>";
-										echo "<div class='col-xs-4'>";
-										echo "<p> <b> Dia: $fechaTransformada</b></p>";
-										echo "<p> Hora: $horaTransformada</p>";
-										echo "<p><a class='btn btn-primary' href='./".$group."/".$refToFile."'>Ver Reporte</a></p>\n";
-							
-									}
-
-									
-
-									
-								}
 							}
-						//Tras juntar los reportes de un mismo día, si se realizó cierro esta cadena de divs. En caso contrario no	
-						if(!empty($fechaTransformadaAnterior)){
-							$fechaTransformadaAnterior="";
-							echo "</div>"; //Cierra el ultimo div de los reportes de un mismo dia
 						}
-						echo "</div>"; //cierra el div de row
+						//recorro el array de forma decreciente desde atrás hacia el principio.
+						for($i=($cntReportes-1);$i>=0; $i--){
+								//Se parte la cadena por el '-'
+								$refFirstSplit = explode('-',$array[$i]);								
+								//Se saca la hora dividiendo el string sobrante de la anterior operación por '_' 
+								$refSecondSplit = explode('_',$refFirstSplit[1]);
+								//Se obtiene la fecha
+								$fechaReporte = $refFirstSplit[0];
+								$horaReporte = $refSecondSplit[0];
+
+								$anio = substr($fechaReporte,0,4); 
+								$mes = substr($fechaReporte,4,2); 
+								$dia = substr($fechaReporte,6,2); 
+
+								$hora = substr($horaReporte,0,2); 
+								$minuto = substr($horaReporte,2,2); 
+								$segundo = substr($horaReporte,4,2); 
+
+								$fechaTransformada = "".$dia."/".$mes."/".$anio;
+								$horaTransformada = "".$hora.":".$minuto.":".$segundo;
+
+								if($primero){
+									//guardo la fecha anterior
+									$fechaTransformadaAnterior= $fechaTransformada;
+									$primero = false;
+									echo "<div class='col-xs-4'>";
+									echo "<p> <b> Dia: $fechaTransformada</b></p>";
+									echo "<p> Hora: $horaTransformada</p>";
+									echo "<p><a class='btn btn-primary' href='./".$group."/".$array[$i]."'>Ver Reporte</a></p>\n";
+								}
+								else if(strcmp($fechaTransformada,$fechaTransformadaAnterior)===0){
+									//echo "2: $fechaTransformada - $fechaTransformadaAnterior";
+									echo "<p> Hora: $horaTransformada</p>";
+									echo "<p><a class='btn btn-primary' href='./".$group."/".$array[$i]."'>Ver Reporte</a></p>\n";
+
+								}
+								else if(strcmp($fechaTransformada,$fechaTransformadaAnterior)!==0){
+									//echo "3 $fechaTransformada - $fechaTransformadaAnterior";
+									//Se actualiza la nueva fecha anterior
+									$fechaTransformadaAnterior= $fechaTransformada;
+									echo "</div>";
+									echo "<div class='col-xs-4'>";
+									echo "<p> <b> Dia: $fechaTransformada</b></p>";
+									echo "<p> Hora: $horaTransformada</p>";
+									echo "<p><a class='btn btn-primary' href='./".$group."/".$array[$i]."'>Ver Reporte</a></p>\n";
+						
+								}
+
+								
+
+								
+							} //Fin del for de impresion normal
+							
+						
 
 
-						echo "</div>"; //Cierra el div de cada grupo
 
-						$cntGroup++;
+							//Tras juntar los reportes de un mismo día, si se realizó cierro esta cadena de divs. En caso contrario no	
+							if(!empty($fechaTransformadaAnterior)){
+								$fechaTransformadaAnterior="";
+								echo "</div>"; //Cierra el ultimo div de los reportes de un mismo dia
+							}
+							echo "</div>"; //cierra el div de row
 
-					}
+
+							echo "</div>"; //Cierra el div de cada grupo
+
+							$cntGroup++;
+
+					}//End foreach group
 
 					echo "</section>"; //Cierra la seccion
 					echo "</div>"; //cierra el div que recoge la seccion
