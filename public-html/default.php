@@ -20,6 +20,8 @@
 				//Se obtiene cada carpeta de cada boss de cada ala
 				$bosses = array('.', '..');
 				$cntBoss = 0;
+				$dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
+
 
 			
 				//Para cada boss
@@ -74,6 +76,7 @@
 						$files = scandir($group);	
 						$primero = true;
 						$fechaTransformadaAnterior="";
+						$fechaTransformadaDia="";
 						$cntReportes=0;
 
 						//Recorre el directorio obteniendo los reportes y guardandolos en un array
@@ -95,24 +98,25 @@
 								//Se obtiene la fecha
 								$fechaReporte = $refFirstSplit[0];
 								$horaReporte = $refSecondSplit[0];
-
+								//Obtiene de las cadenas anteriores los valores individuales de la fecha
 								$anio = substr($fechaReporte,0,4); 
 								$mes = substr($fechaReporte,4,2); 
 								$dia = substr($fechaReporte,6,2); 
-
 								$hora = substr($horaReporte,0,2); 
 								$minuto = substr($horaReporte,2,2); 
 								$segundo = substr($horaReporte,4,2); 
-
+								//Obtiene formateada la fecha y la hora
 								$fechaTransformada = "".$dia."/".$mes."/".$anio;
 								$horaTransformada = "".$hora.":".$minuto.":".$segundo;
-
+								$fechaTransformadaDia = "".$anio."-".$mes."-".$dia;
+								//Obtiene el dia de la semana basado en la fecha
+								$diaSemana = $dias[date('N', strtotime($fechaTransformadaDia))];
 								if($primero){
 									//guardo la fecha anterior
 									$fechaTransformadaAnterior= $fechaTransformada;
 									$primero = false;
 									echo "<div class='col-xs-4'>";
-									echo "<p> <b> Dia: $fechaTransformada</b></p>";
+									echo "<p> <b> $diaSemana: $fechaTransformada</b></p>";
 									echo "<p> Hora: $horaTransformada</p>";
 									echo "<p><a class='btn btn-primary' href='./".$group."/".$array[$i]."'>Ver Reporte</a></p>\n";
 								}
@@ -128,7 +132,7 @@
 									$fechaTransformadaAnterior= $fechaTransformada;
 									echo "</div>";
 									echo "<div class='col-xs-4'>";
-									echo "<p> <b> Dia: $fechaTransformada</b></p>";
+									echo "<p> <b> $diaSemana: $fechaTransformada</b></p>";
 									echo "<p> Hora: $horaTransformada</p>";
 									echo "<p><a class='btn btn-primary' href='./".$group."/".$array[$i]."'>Ver Reporte</a></p>\n";
 						
